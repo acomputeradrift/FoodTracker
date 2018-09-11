@@ -17,6 +17,9 @@
 		7D3C57392145BA2100249A31 /* Meal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3C57382145BA2100249A31 /* Meal.swift */; };
 		7D3C573F2145D0BB00249A31 /* MealTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3C573E2145D0BB00249A31 /* MealTableViewCell.swift */; };
 		7D3C57412145D5C200249A31 /* MealTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3C57402145D5C200249A31 /* MealTableViewController.swift */; };
+		7D98FA2921473ACC00528E6E /* FoodTrackerAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98FA2821473ACC00528E6E /* FoodTrackerAPIRequest.swift */; };
+		7D98FA2B2147426E00528E6E /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98FA2A2147426E00528E6E /* User.swift */; };
+		7D9E0A58214738C100EB9D38 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D9E0A57214738C100EB9D38 /* NetworkManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +47,9 @@
 		7D3C57382145BA2100249A31 /* Meal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meal.swift; sourceTree = "<group>"; };
 		7D3C573E2145D0BB00249A31 /* MealTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealTableViewCell.swift; sourceTree = "<group>"; };
 		7D3C57402145D5C200249A31 /* MealTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealTableViewController.swift; sourceTree = "<group>"; };
+		7D98FA2821473ACC00528E6E /* FoodTrackerAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTrackerAPIRequest.swift; sourceTree = "<group>"; };
+		7D98FA2A2147426E00528E6E /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		7D9E0A57214738C100EB9D38 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +115,9 @@
 			isa = PBXGroup;
 			children = (
 				7D3C57382145BA2100249A31 /* Meal.swift */,
+				7D9E0A57214738C100EB9D38 /* NetworkManager.swift */,
+				7D98FA2821473ACC00528E6E /* FoodTrackerAPIRequest.swift */,
+				7D98FA2A2147426E00528E6E /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -244,7 +253,10 @@
 				7D3C57392145BA2100249A31 /* Meal.swift in Sources */,
 				7D0CC7B7214590EE00886CAB /* MealViewController.swift in Sources */,
 				7D3C57372145A86900249A31 /* RatingControl.swift in Sources */,
+				7D9E0A58214738C100EB9D38 /* NetworkManager.swift in Sources */,
 				7D0CC7B5214590EE00886CAB /* AppDelegate.swift in Sources */,
+				7D98FA2B2147426E00528E6E /* User.swift in Sources */,
+				7D98FA2921473ACC00528E6E /* FoodTrackerAPIRequest.swift in Sources */,
 				7D3C57412145D5C200249A31 /* MealTableViewController.swift in Sources */,
 				7D3C573F2145D0BB00249A31 /* MealTableViewCell.swift in Sources */,
 			);

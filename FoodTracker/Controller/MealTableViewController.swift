@@ -15,6 +15,7 @@ class MealTableViewController: UITableViewController {
     
     var meals = [Meal]()
     weak var actionToEnable : UIAlertAction?
+    var mainUser : User?
 
     
     override func viewDidLoad() {
@@ -221,6 +222,18 @@ class MealTableViewController: UITableViewController {
     func saveHandler(){
         var savedAlert = UIAlertController()
         savedAlert = UIAlertController(title: "Saved", message: "Your new account is ready to use.", preferredStyle: .alert)
+        let networker = NetworkManager()
+        let foodTracker = FoodTrackerAPIRequest(networker: networker)
+        
+        guard let userName = UserDefaults.standard.string(forKey: "username"),
+            let password = UserDefaults.standard.string(forKey: "password") else{
+                print("No user name and password in user defaults")
+                return
+        }
+        foodTracker.signUp(userName: userName, password: password) { (user, error) in
+           self.mainUser = user
+        }
+      
         self.present(savedAlert, animated: true, completion:nil )
         let when = DispatchTime.now() + 2
         DispatchQueue.main.asyncAfter(deadline: when){
