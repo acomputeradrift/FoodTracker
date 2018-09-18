@@ -80,6 +80,7 @@ import Foundation
             return urlRequest
         }
     }
+
     
     /// JSON Parsing
     extension FoodTrackerAPIRequest {
@@ -101,7 +102,6 @@ import Foundation
             guard let results = jsonObject as? [String: Any] else {
                 throw FoodTrackerAPIError.invalidJSON
             }
-            
             return results
         }
         
