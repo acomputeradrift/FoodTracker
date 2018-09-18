@@ -8,6 +8,9 @@
 
 import UIKit
 import os.log
+import Firebase
+import FirebaseAuth
+import Firebase
 
 class MealTableViewController: UITableViewController {
     
@@ -16,27 +19,19 @@ class MealTableViewController: UITableViewController {
     var meals = [Meal]()
     weak var actionToEnable : UIAlertAction?
     var mainUser : User?
+    let ref = Database.database().reference(withPath: "meal-items")
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if UserDefaults.standard.string(forKey: "username") == "" {
-           userSignUp()
-        }else{
-           userSignIn()
-        }
-    
+        welcome()
         // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
-        
-        // Load any saved meals, otherwise load sample data.
         if let savedMeals = loadMeals() {
             meals += savedMeals
         }else {
-            // Load the sample data.
             loadSampleMeals()
         }
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -47,14 +42,12 @@ class MealTableViewController: UITableViewController {
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        
         return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return meals.count
-        
     }
     
     //MARK: Actions
@@ -113,11 +106,9 @@ class MealTableViewController: UITableViewController {
         }
         // Fetches the appropriate meal for the data source layout.
         let meal = meals[indexPath.row]
-        
         cell.nameLabel.text = meal.name
         cell.photoImageView.image = meal.photo
         cell.ratingControl.rating = meal.rating
-        
         return cell
     }
     
@@ -128,8 +119,6 @@ class MealTableViewController: UITableViewController {
         // Return false if you do not want the specified item to be editable.
         return true
     }
-    
-    
     
     //Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -143,13 +132,10 @@ class MealTableViewController: UITableViewController {
         }    
     }
     
-    
-    
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
         
     }
-    
     
     /*
      // Override to support conditional rearranging of the table view.
@@ -159,10 +145,8 @@ class MealTableViewController: UITableViewController {
      }
      */
     
-    
     // MARK: - Navigation
     
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
@@ -192,11 +176,11 @@ class MealTableViewController: UITableViewController {
         return NSKeyedUnarchiver.unarchiveObject(withFile: Meal.ArchiveURL.path) as? [Meal]
     }
     
-     // MARK: - User Sign Up
+    // MARK: - User Sign Up
     func userSignUp () {
-
+        
         var myAlert = UIAlertController()
-        myAlert = UIAlertController(title: "Welcome to FoodTracker Create Account", message: "Please enter a user name and password for your new account:", preferredStyle: .alert)
+        myAlert = UIAlertController(title: "Create Account", message: "Please enter a user name and password for your new account:", preferredStyle: .alert)
         myAlert.addTextField { (textFields) in
             textFields.placeholder = "enter username"
         }
@@ -217,7 +201,7 @@ class MealTableViewController: UITableViewController {
         myAlert.addAction(createAcountAction)
         myAlert.addAction(cancel)
         self.present(myAlert, animated: true, completion: nil)
-        }
+    }
     
     func saveHandler(){
         var savedAlert = UIAlertController()
@@ -231,19 +215,19 @@ class MealTableViewController: UITableViewController {
                 return
         }
         foodTracker.signUp(userName: userName, password: password) { (user, error) in
-           self.mainUser = user
+            self.mainUser = user
         }
-      
+        
         self.present(savedAlert, animated: true, completion:nil )
         let when = DispatchTime.now() + 2
         DispatchQueue.main.asyncAfter(deadline: when){
             savedAlert.dismiss(animated: true, completion: nil)
+        }
     }
-}
     // MARK: - User Sign In
     func userSignIn () {
         var myAlert = UIAlertController()
-        myAlert = UIAlertController(title: "Welcome to FoodTracker Sign In", message: "Please enter your user name and password:", preferredStyle: .alert)
+        myAlert = UIAlertController(title: "Sign In", message: "Please enter your user name and password:", preferredStyle: .alert)
         myAlert.addTextField { (textFields) in
             textFields.text = UserDefaults.standard.string(forKey: "username") ?? ""
         }
@@ -263,5 +247,20 @@ class MealTableViewController: UITableViewController {
         myAlert.addAction(clearAction)
         self.present(myAlert, animated: true, completion: nil)
     }
-  
+    
+    // MARK: - Welcome Screen
+    func welcome(){
+        var myAlert = UIAlertController()
+        myAlert = UIAlertController(title: "Welcome to FoodTracker!", message: "Please sign in or create and account.", preferredStyle: .alert)
+        let signInAction = UIAlertAction(title: "Sign In", style: .default, handler: { (alert) -> Void in
+            self.userSignIn()
+        })
+        let signUpAction = UIAlertAction(title: "Create Account", style: .default, handler: { (alert) -> Void in
+            self.userSignUp()
+        })
+        myAlert.addAction(signInAction)
+        myAlert.addAction(signUpAction)
+        self.present(myAlert, animated: true, completion: nil)
+    }
+    
 }
