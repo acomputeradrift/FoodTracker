@@ -10,7 +10,8 @@ import UIKit
 import os.log
 import Firebase
 import FirebaseAuth
-import Firebase
+import FirebaseDatabase
+
 
 class MealTableViewController: UITableViewController {
     
@@ -19,14 +20,18 @@ class MealTableViewController: UITableViewController {
     var meals = [Meal]()
     weak var actionToEnable : UIAlertAction?
     var mainUser : User?
-    let ref = Database.database().reference(withPath: "meal-items")
-
+    var currentUser: String?
+    var ref: DatabaseReference!
+    
+    @IBOutlet weak var loginName: UIBarButtonItem!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        signOut()
         welcome()
         // Use the edit button item provided by the table view controller.
-        navigationItem.leftBarButtonItem = editButtonItem
+        //navigationItem.leftBarButtonItem = editButtonItem
         if let savedMeals = loadMeals() {
             meals += savedMeals
         }else {
@@ -112,15 +117,7 @@ class MealTableViewController: UITableViewController {
         return cell
     }
     
-    //}
-    
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    
-    //Override to support editing the table view.
+//    //Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
@@ -129,21 +126,8 @@ class MealTableViewController: UITableViewController {
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
-    
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-        
-    }
-    
-    /*
-     // Override to support conditional rearranging of the table view.
-     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the item to be re-orderable.
-     return true
-     }
-     */
     
     // MARK: - Navigation
     
@@ -158,7 +142,7 @@ class MealTableViewController: UITableViewController {
             }
             
             guard let selectedMealCell = sender as? MealTableViewCell else {
-                fatalError("Unexpected sender: \(sender)")
+                fatalError("Unexpected sender: \(sender ?? "No Meal")")
             }
             
             guard let indexPath = tableView.indexPath(for: selectedMealCell) else {
@@ -168,7 +152,7 @@ class MealTableViewController: UITableViewController {
             let selectedMeal = meals[indexPath.row]
             mealDetailViewController.meal = selectedMeal
         default:
-            fatalError("Unexpected Segue Identifier; \(segue.identifier)")
+            fatalError("Unexpected Segue Identifier; \(segue.identifier ?? "No segue identifier")")
         }
     }
     
@@ -176,79 +160,8 @@ class MealTableViewController: UITableViewController {
         return NSKeyedUnarchiver.unarchiveObject(withFile: Meal.ArchiveURL.path) as? [Meal]
     }
     
-    // MARK: - User Sign Up
-    func userSignUp () {
-        
-        var myAlert = UIAlertController()
-        myAlert = UIAlertController(title: "Create Account", message: "Please enter a user name and password for your new account:", preferredStyle: .alert)
-        myAlert.addTextField { (textFields) in
-            textFields.placeholder = "enter username"
-        }
-        myAlert.addTextField { (textFields) in
-            textFields.placeholder = "enter password"
-            textFields.isSecureTextEntry = true
-        }
-        let cancel = UIAlertAction(title: "Cancel", style: .destructive, handler: { (action) -> Void in })
-        let createAcountAction = UIAlertAction(title: "Create Account", style: .default, handler: { (alert) -> Void in
-            let usernameTextField = myAlert.textFields![0] as UITextField
-            let passwordTextField = myAlert.textFields![1] as UITextField
-            UserDefaults.standard.set("\(usernameTextField.text ?? "")", forKey: ("username"))
-            UserDefaults.standard.set("\(passwordTextField.text ?? "")", forKey: ("password"))
-            print("\(usernameTextField.text ?? "")")
-            print("\(passwordTextField.text ?? "")")
-            self.saveHandler()
-        })
-        myAlert.addAction(createAcountAction)
-        myAlert.addAction(cancel)
-        self.present(myAlert, animated: true, completion: nil)
-    }
-    
-    func saveHandler(){
-        var savedAlert = UIAlertController()
-        savedAlert = UIAlertController(title: "Saved", message: "Your new account is ready to use.", preferredStyle: .alert)
-        let networker = NetworkManager()
-        let foodTracker = FoodTrackerAPIRequest(networker: networker)
-        
-        guard let userName = UserDefaults.standard.string(forKey: "username"),
-            let password = UserDefaults.standard.string(forKey: "password") else{
-                print("No user name and password in user defaults")
-                return
-        }
-        foodTracker.signUp(userName: userName, password: password) { (user, error) in
-            self.mainUser = user
-        }
-        
-        self.present(savedAlert, animated: true, completion:nil )
-        let when = DispatchTime.now() + 2
-        DispatchQueue.main.asyncAfter(deadline: when){
-            savedAlert.dismiss(animated: true, completion: nil)
-        }
-    }
-    // MARK: - User Sign In
-    func userSignIn () {
-        var myAlert = UIAlertController()
-        myAlert = UIAlertController(title: "Sign In", message: "Please enter your user name and password:", preferredStyle: .alert)
-        myAlert.addTextField { (textFields) in
-            textFields.text = UserDefaults.standard.string(forKey: "username") ?? ""
-        }
-        myAlert.addTextField { (textFields) in
-            textFields.text = UserDefaults.standard.string(forKey: "password") ?? ""
-            textFields.isSecureTextEntry = true
-        }
-        let submitAction = UIAlertAction(title: "Sign In", style: .default, handler: { (alert) -> Void in
-        })
-        let clearAction = UIAlertAction(title: "ClearDefaults", style: .default, handler: { (alert) -> Void in
-            UserDefaults.standard.set("", forKey: "username")
-            UserDefaults.standard.set("", forKey: "password")
-            let errorMessage = UserDefaults.standard.synchronize()
-            print("\(errorMessage)")
-        })
-        myAlert.addAction(submitAction)
-        myAlert.addAction(clearAction)
-        self.present(myAlert, animated: true, completion: nil)
-    }
-    
     // MARK: - Welcome Screen
+    
     func welcome(){
         var myAlert = UIAlertController()
         myAlert = UIAlertController(title: "Welcome to FoodTracker!", message: "Please sign in or create and account.", preferredStyle: .alert)
@@ -263,4 +176,118 @@ class MealTableViewController: UITableViewController {
         self.present(myAlert, animated: true, completion: nil)
     }
     
+    // MARK: - User Sign Up
+    func userSignUp () {
+        
+        var myAlert = UIAlertController()
+        myAlert = UIAlertController(title: "Create Account", message: "Please enter your email and password for your new account:", preferredStyle: .alert)
+        myAlert.addTextField { (textFields) in
+            textFields.placeholder = "enter email"
+        }
+        myAlert.addTextField { (textFields) in
+            textFields.placeholder = "enter password"
+            textFields.isSecureTextEntry = true
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: .destructive, handler: { (action) -> Void in })
+        let createAcountAction = UIAlertAction(title: "Create Account", style: .default, handler: { (alert) -> Void in
+            guard let email = myAlert.textFields![0].text as String? else{
+                print("That email is not good")
+                return
+            }
+            guard let password = myAlert.textFields![1].text as String? else{
+                print("That password is not good")
+                return
+            }
+            self.ref = Database.database().reference()
+            Auth.auth().createUser(withEmail: email, password: password) { (authResult, error) in
+                // ...
+                guard let user = authResult?.user else { return }
+                self.currentUser = user.email
+                self.loginName.title = self.currentUser
+                self.signUpConfirm()
+            }
+        })
+        myAlert.addAction(createAcountAction)
+        myAlert.addAction(cancel)
+        self.present(myAlert, animated: true, completion: nil)
+    }
+    
+    func signUpConfirm(){
+        var savedAlert = UIAlertController()
+        savedAlert = UIAlertController(title: "Creating account...", message: "", preferredStyle: .alert)
+        self.present(savedAlert, animated: true, completion:nil )
+        let when = DispatchTime.now() + 2
+        DispatchQueue.main.asyncAfter(deadline: when){
+            savedAlert.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    // MARK: - User Sign In
+    
+    func userSignIn () {
+        var myAlert = UIAlertController()
+        myAlert = UIAlertController(title: "Sign In", message: "Please enter your email and password.", preferredStyle: .alert)
+        myAlert.addTextField { (textFields) in
+            textFields.placeholder = "email"
+        }
+        myAlert.addTextField { (textFields) in
+            textFields.placeholder = "password"
+            textFields.isSecureTextEntry = true
+        }
+        let submitAction = UIAlertAction(title: "Sign In", style: .default, handler: { (alert) -> Void in
+            guard let email = myAlert.textFields![0].text as String? else{
+                print("That email is not good")
+                return
+            }
+            guard let password = myAlert.textFields![1].text as String? else{
+                print("That password is not good")
+                return
+            }
+            Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
+                self.signInConfirm()
+                self.loginName.title = email
+            }
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in self.welcome()}
+        myAlert.addAction(submitAction)
+        myAlert.addAction(cancelAction)
+        self.present(myAlert, animated: true, completion: nil)
+    }
+    
+    func signInConfirm(){
+        var savedAlert = UIAlertController()
+        savedAlert = UIAlertController(title: "Signing in...", message: "", preferredStyle: .alert)
+        self.present(savedAlert, animated: true, completion:nil )
+        let when = DispatchTime.now() + 2
+        DispatchQueue.main.asyncAfter(deadline: when){
+            savedAlert.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    //MARK: - User Sign Out
+    
+    func signOut(){
+        let firebaseAuth = Auth.auth()
+        do {
+            try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+            print ("Error signing out: %@", signOutError)
+        }
+        self.loginName.title = ""
+        self.welcome()
+    }
+    func signOutConfirm(){
+        var savedAlert = UIAlertController()
+        savedAlert = UIAlertController(title: "Loggin out...", message: "", preferredStyle: .alert)
+        self.present(savedAlert, animated: true, completion:nil )
+        let when = DispatchTime.now() + 2
+        DispatchQueue.main.asyncAfter(deadline: when){
+            savedAlert.dismiss(animated: true, completion: nil)
+        }
+    }
+
+    @IBAction func logOutButton(_ sender: UIBarButtonItem) {
+        signOut()
+        signOutConfirm()
+    }
 }
