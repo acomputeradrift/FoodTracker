@@ -17,6 +17,7 @@
 		7D3C57392145BA2100249A31 /* Meal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3C57382145BA2100249A31 /* Meal.swift */; };
 		7D3C573F2145D0BB00249A31 /* MealTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3C573E2145D0BB00249A31 /* MealTableViewCell.swift */; };
 		7D3C57412145D5C200249A31 /* MealTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3C57402145D5C200249A31 /* MealTableViewController.swift */; };
+		7D84CE89215185E200748431 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D84CE88215185E200748431 /* GoogleService-Info.plist */; };
 		7D98FA2921473ACC00528E6E /* FoodTrackerAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98FA2821473ACC00528E6E /* FoodTrackerAPIRequest.swift */; };
 		7D98FA2B2147426E00528E6E /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98FA2A2147426E00528E6E /* User.swift */; };
 		7D9E0A58214738C100EB9D38 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D9E0A57214738C100EB9D38 /* NetworkManager.swift */; };
@@ -47,6 +48,7 @@
 		7D3C57382145BA2100249A31 /* Meal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meal.swift; sourceTree = "<group>"; };
 		7D3C573E2145D0BB00249A31 /* MealTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealTableViewCell.swift; sourceTree = "<group>"; };
 		7D3C57402145D5C200249A31 /* MealTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealTableViewController.swift; sourceTree = "<group>"; };
+		7D84CE88215185E200748431 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7D98FA2821473ACC00528E6E /* FoodTrackerAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTrackerAPIRequest.swift; sourceTree = "<group>"; };
 		7D98FA2A2147426E00528E6E /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		7D9E0A57214738C100EB9D38 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				7D3C573D2145BA8B00249A31 /* Storyboards */,
 				7D0CC7BB214590EF00886CAB /* Assets.xcassets */,
 				7D0CC7C0214590EF00886CAB /* Info.plist */,
+				7D84CE88215185E200748431 /* GoogleService-Info.plist */,
 				7D0CC7B4214590EE00886CAB /* AppDelegate.swift */,
 			);
 			path = FoodTracker;
@@ -231,6 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D0CC7BF214590EF00886CAB /* LaunchScreen.storyboard in Resources */,
+				7D84CE89215185E200748431 /* GoogleService-Info.plist in Resources */,
 				7D0CC7BC214590EF00886CAB /* Assets.xcassets in Resources */,
 				7D0CC7BA214590EE00886CAB /* Main.storyboard in Resources */,
 			);
