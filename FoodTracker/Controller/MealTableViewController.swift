@@ -164,7 +164,7 @@ class MealTableViewController: UITableViewController {
     
     func welcome(){
         var myAlert = UIAlertController()
-        myAlert = UIAlertController(title: "Welcome to FoodTracker!", message: "Please sign in or create and account.", preferredStyle: .alert)
+        myAlert = UIAlertController(title: "Welcome to FoodTracker!", message: "Please sign in or create an account.", preferredStyle: .alert)
         let signInAction = UIAlertAction(title: "Sign In", style: .default, handler: { (alert) -> Void in
             self.userSignIn()
         })
@@ -243,15 +243,25 @@ class MealTableViewController: UITableViewController {
                 print("That password is not good")
                 return
             }
-            Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
-                self.signInConfirm()
-                self.loginName.title = email
-            }
+            self.signInFirebaseAuth(withEmail: email, password: password)
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in self.welcome()}
         myAlert.addAction(submitAction)
         myAlert.addAction(cancelAction)
         self.present(myAlert, animated: true, completion: nil)
+    }
+    
+    //user auth
+    
+    func signInFirebaseAuth(withEmail email: String, password: String) {
+        Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
+            if error == nil {
+                self.signInConfirm()
+                self.loginName.title = email
+            }else{
+                self.signInFailed()
+            }
+        }
     }
     
     func signInConfirm(){
@@ -264,6 +274,16 @@ class MealTableViewController: UITableViewController {
         }
     }
     
+    func signInFailed(){
+        var savedAlert = UIAlertController()
+        savedAlert = UIAlertController(title: "Invalid Email or Incorrect Password!!", message: "", preferredStyle: .alert)
+        self.present(savedAlert, animated: true, completion:nil )
+        let when = DispatchTime.now() + 2
+        DispatchQueue.main.asyncAfter(deadline: when){
+            savedAlert.dismiss(animated: true, completion: self.userSignIn)
+        }
+    }
+        
     //MARK: - User Sign Out
     
     func signOut(){
@@ -274,7 +294,7 @@ class MealTableViewController: UITableViewController {
             print ("Error signing out: %@", signOutError)
         }
         self.loginName.title = ""
-        self.welcome()
+        
     }
     func signOutConfirm(){
         var savedAlert = UIAlertController()
@@ -282,7 +302,7 @@ class MealTableViewController: UITableViewController {
         self.present(savedAlert, animated: true, completion:nil )
         let when = DispatchTime.now() + 2
         DispatchQueue.main.asyncAfter(deadline: when){
-            savedAlert.dismiss(animated: true, completion: nil)
+            savedAlert.dismiss(animated: true, completion: self.welcome)
         }
     }
 
