@@ -206,7 +206,9 @@ class MealTableViewController: UITableViewController {
                 self.loginName.title = self.currentUser
                 self.signUpConfirm()
             }
+            
         })
+        
         myAlert.addAction(createAcountAction)
         myAlert.addAction(cancel)
         self.present(myAlert, animated: true, completion: nil)
